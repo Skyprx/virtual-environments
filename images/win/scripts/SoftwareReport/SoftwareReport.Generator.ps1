@@ -22,6 +22,14 @@ $markdown += New-MDList -Style Unordered -Lines @(
     "Image Version: $env:ImageVersion"
 )
 
+if (Test-IsWin19)
+{
+    $markdown += New-MDHeader "Enabled windows optional features" -Level 2
+    $markdown += New-MDList -Style Unordered -Lines @(
+        "Windows Subsystem for Linux"
+    )
+}
+
 $markdown += New-MDHeader "Installed Software" -Level 2
 $markdown += New-MDHeader "Language and Runtime" -Level 3
 
@@ -78,6 +86,7 @@ $markdown += New-MDList -Style Unordered -Lines @(
     (Get-MySQLVersion),
     (Get-MercurialVersion),
     (Get-NSISVersion),
+    (Get-NewmanVersion),
     (Get-OpenSSLVersion),
     (Get-PackerVersion),
     (Get-SQLPSVersion),
@@ -99,10 +108,19 @@ $markdown += New-MDList -Style Unordered -Lines @(
     (Get-AzureDevopsExtVersion),
     (Get-AWSCLIVersion),
     (Get-AWSSAMVersion),
+    (Get-AWSSessionManagerVersion),
     (Get-AlibabaCLIVersion),
     (Get-CloudFoundryVersion),
     (Get-HubVersion),
     (Get-GoogleCloudSDKVersion)
+)
+
+$markdown += New-MDHeader "Rust packages:" -Level 3
+$markdown += New-MDList -Style Unordered -Lines @(
+    (Get-BindgenVersion),
+    (Get-CbindgenVersion),
+    (Get-CargoAuditVersion),
+    (Get-CargoOutdatedVersion)
 )
 
 $markdown += New-MDHeader "Browsers and webdrivers" -Level 3
@@ -156,7 +174,6 @@ $markdown += New-MDHeader ".NET Core Runtime" -Level 3
 Get-DotnetRuntimes | Foreach-Object {
     $path = $_.Path
     $versions = $_.Versions
-    $markdown += "``Type: Developer Pack``"
     $markdown += "``Location: $path``"
     $markdown += New-MDNewLine
     $markdown += New-MDList -Lines $versions -Style Unordered
@@ -164,6 +181,8 @@ Get-DotnetRuntimes | Foreach-Object {
 
 $markdown += New-MDHeader ".NET Framework" -Level 3
 $frameworks = Get-DotnetFrameworkTools
+$markdown += "``Type: Developer Pack``"
+$markdown += New-MDNewLine
 $markdown += "``Location $($frameworks.Path)``"
 $markdown += New-MDNewLine
 $markdown += New-MDList -Lines $frameworks.Versions -Style Unordered
